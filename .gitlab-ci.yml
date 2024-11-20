@@ -1,0 +1,63 @@
+image: ruby:2.7.5
+
+.tags_runners:
+  tags: ['general']
+
+.base_setup:
+  before_script:
+    - gem install bundler -v 2.4.22 --no-document
+    - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+    - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+    - apt-get update -qy
+    - apt-get install -y yarn
+    - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+    - apt-get update -qy
+    - apt-get install -y nodejs
+    - yarn install --check-files
+    - bundler config set --local path './vendor/ruby'
+
+  cache:
+    key:
+        files:
+          - Gemfile.lock
+    paths:
+      - ./vendor/ruby
+
+stages:
+  - setup
+  - lint
+  - test
+  
+setup_dependencies:
+  stage: setup
+  extends:
+    - .base_setup
+    - .tags_runners
+  script:
+    - bundler install --jobs $(nproc) "${FLAGS[@]}"
+
+rubocop/erb-lint:
+  stage: lint
+  extends:
+    - .base_setup
+    - .tags_runners
+  script:
+    - bundler exec rubocop
+    - bundler exec erblint ./app
+
+rspec:
+  stage: test
+  extends:
+    - .base_setup
+    - .tags_runners
+  services:
+    - postgres
+  variables:
+    POSTGRES_DB: postgres
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB_HOST: postgres
+  script:
+    - cp config/database.yml.ci config/database.yml
+    - bundler exec rails db:setup
+    - bundler exec rspec

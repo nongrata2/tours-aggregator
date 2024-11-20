@@ -1,0 +1,32 @@
+<div class="container mt-4">
+
+  <%= form_with url: cities_path, method: :get, local: true do %>
+    <label for="sort_by">Отсортировать по:</label>
+    <select id="sort_by" name="sort_by">
+      <option value="">---</option>
+      <option value="alphabet" <%= 'selected' if params[:sort_by] == 'alphabet' %>>Алфавитный порядок</option>
+      <option value="activities_count desc" <%= 'selected' if params[:sort_by] == 'activities_count desc' %>>Сначала много экскурсий</option>
+      <option value="activities_count asc" <%= 'selected' if params[:sort_by] == 'activities_count asc' %>>Сначала мало экскурсий</option>
+    </select>
+  <% end %>
+
+  <div class="row justify-content-center">
+    <% @cities.each do |city| %>
+      <% cache city do %>
+        <div class="col-md-3 mb-4">
+          <div class="card">
+            <%= image_tag show_image_city(city), class: 'card-img-top', alt: city.name %>
+            <div class="card-body">
+              <h5 class="card-title"><%= city.name %></h5>
+              <p class="card-text">
+                <%= activities_numeric(city.activities_count) %><br>
+                <%= guides_numeric(city.guides_count) %>, <%= reviews_numeric(city.reviews_count) %><br>
+                <%= link_to 'View Tours', tours_path(city_id: city.id, city_name: city.name), class: 'btn btn-primary' %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  <%== pagy_bootstrap_nav(@pagy) %>
+  </div>
+</div>

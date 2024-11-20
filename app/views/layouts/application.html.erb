@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>YourAppName</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+  <header>
+    <nav class="navbar">
+      <%= link_to 'Туры', tours_path, class: 'nav-button' %>
+      <%= link_to 'Города', cities_path, class: 'nav-button' %>
+    </nav>
+  </header>
+
+    <%= yield %>
+
+  </body>
+</html>

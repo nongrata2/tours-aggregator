@@ -1,0 +1,47 @@
+<div class="tour-details container mt-4">
+  <% if @tags.present? %>
+  <div class="tags mb-3">
+  Категории экскурсии:
+    <% @tags.each do |tag| %>
+      <%= link_to tag.name, tours_path(tag: tag.name), class: 'tag-show badge' %>
+    <% end %>
+  </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-12 mb-3">
+      <h1>Экскурсия: <%= @tour.title %></h1>
+    </div>
+
+    <div class="col-md-6">
+      <h3>Информация о туре</h3>
+      <ul class="list-unstyled">
+        <li><strong>Цена:</strong> <%= @tour.formatted_price %> <%= @tour.price_per %></li>
+        <li><strong>Рейтинг:</strong> <%= @tour.reviews_rating %> из 5</li>
+        <li><strong>Количество отзывов:</strong> <%= @tour.reviews_count %></li>
+        <li><strong>Длительность:</strong> <%= @tour.duration_text %></li>
+      </ul>
+    </div>
+
+    <div class="col-md-6">
+      <%= image_tag show_image_tour(@tour), class: 'img-fluid rounded shadow', alt: @tour.title %>
+    </div>
+  </div>
+
+  <% if @offers.present? %>
+    <% recommended_tours = @tour_presenter.recommended_tours(@offers) %>
+    <div class="offer-tours mt-4">
+      <h3>С этим туром также смотрят:</h3>
+      <div class="offer-tours-wrapper">
+        <% recommended_tours.each do |recommended_tour| %>
+          <div class="offer-tour-card">
+            <%= image_tag show_image_tour(recommended_tour), alt: recommended_tour.title %>
+            <div class="offer-tour-text">
+              <%= link_to recommended_tour.title, tour_path(recommended_tour.sputnik_id, sputnik_id: recommended_tour.sputnik_id) %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
