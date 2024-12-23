@@ -12,7 +12,17 @@ bundle install
 rails db:migrate
 ```
 
-3. To run the web server
+3. To run all the rake tasks(to fill the DB):
+
+```
+rake data:fetch_cities
+rake data:fetch_tags
+rake data:fetch_tours
+rake data:fetch_categorizations
+rake data:fetch_recommendations
+```
+
+4. To run the web server
 ```
 rails s
 ```
