@@ -1,4 +1,4 @@
-# README
+# Quick start
 
 1. To install all the required libraries:
 
